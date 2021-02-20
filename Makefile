@@ -81,11 +81,11 @@ deploy-config: prep-config
 	kubectl apply -f deploy/service.yaml
 	kubectl apply -f deploy/mutatingwebhook-ca-bundle.yaml
 	until kubectl get csr -o \
-		jsonpath='{.items[?(@.spec.username=="system:serviceaccount:default:pod-identity-webhook")].metadata.name}' | \
+		jsonpath='{.items[?(@.spec.username=="system:serviceaccount:kube-system:pod-identity-webhook")].metadata.name}' | \
 		grep -m 1 "csr-"; \
 		do echo "Waiting for CSR to be created" && sleep 1 ; \
 	done
-	kubectl certificate approve $$(kubectl get csr -o jsonpath='{.items[?(@.spec.username=="system:serviceaccount:default:pod-identity-webhook")].metadata.name}')
+	kubectl certificate approve $$(kubectl get csr -o jsonpath='{.items[?(@.spec.username=="system:serviceaccount:kube-system:pod-identity-webhook")].metadata.name}')
 
 delete-config:
 	@echo 'Tearing down mutating controller and associated resources...'
